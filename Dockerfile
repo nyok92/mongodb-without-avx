@@ -1,7 +1,8 @@
 #FROM arm64v8/debian:12 as build
 FROM debian:12 as build
 
-RUN apt update -y && apt install -y build-essential \
+RUN apt update
+RUN apt install -y build-essential \
         libcurl4-openssl-dev \
         liblzma-dev \
         libssl-dev \
