@@ -1,4 +1,4 @@
-FROM debian:11 as build
+FROM debian:12 as build
 
 RUN apt update -y && apt install -y build-essential \
         libcurl4-openssl-dev \
@@ -7,9 +7,11 @@ RUN apt update -y && apt install -y build-essential \
         python-dev-is-python3 \
         python3-pip \
         curl \
-    && rm -rf /var/lib/apt/lists/*
+        wget \
+        python3-venv \ 
+    	&& rm -rf /var/lib/apt/lists/*
 
-ARG MONGO_VERSION=6.2.1
+ARG MONGO_VERSION=7.3.3
 
 RUN mkdir /src && \
     curl -o /tmp/mongo.tar.gz -L "https://github.com/mongodb/mongo/archive/refs/tags/r${MONGO_VERSION}.tar.gz" && \
@@ -23,6 +25,8 @@ RUN patch -p1 < /o2_patch.diff
 
 ARG NUM_JOBS=
 
+RUN python3 -m pip install 'poetry==1.5.1'
+RUN python3 -m poetry install --no-root --sync
 RUN export GIT_PYTHON_REFRESH=quiet && \
     python3 -m pip install requirements_parser && \
     python3 -m pip install -r etc/pip/compile-requirements.txt && \
@@ -33,7 +37,7 @@ RUN export GIT_PYTHON_REFRESH=quiet && \
     strip --strip-debug /install/bin/mongos && \
     rm -rf build
 
-FROM debian:11
+FROM debian:12
 
 RUN apt update -y && \
     apt install -y libcurl4 && \
