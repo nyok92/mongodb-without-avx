@@ -1,4 +1,4 @@
-FROM debian:12 as build
+FROM arm64v8/debian:12 as build
 
 RUN apt update -y && apt install -y build-essential \
         libcurl4-openssl-dev \
@@ -23,7 +23,7 @@ WORKDIR /src
 COPY ./o2_patch.diff /o2_patch.diff
 RUN patch -p1 < /o2_patch.diff
 
-ARG NUM_JOBS=
+ARG NUM_JOBS=1
 
 RUN python3 -m pip install 'poetry==1.5.1'
 RUN python3 -m pip install 'mongo-tooling-metrics==1.0.8'
@@ -38,7 +38,7 @@ RUN export GIT_PYTHON_REFRESH=quiet && \
     strip --strip-debug /install/bin/mongos && \
     rm -rf build
 
-FROM debian:12
+FROM arm64v8/debian:12
 
 RUN apt update -y && \
     apt install -y libcurl4 && \
