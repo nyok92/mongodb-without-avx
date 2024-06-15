@@ -26,6 +26,7 @@ RUN patch -p1 < /o2_patch.diff
 ARG NUM_JOBS=
 
 RUN python3 -m pip install 'poetry==1.5.1'
+RUN python3 -m pip install 'mongo-tooling-metrics==1.0.8'
 RUN python3 -m poetry install --no-root --sync
 RUN export GIT_PYTHON_REFRESH=quiet && \
     python3 -m pip install requirements_parser && \
